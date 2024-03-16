@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/blang/semver/v4"
@@ -59,13 +58,10 @@ func (m *Mocker) ListRecipients(context.Context) ([]string, error) {
 
 // FindRecipients does nothing.
 func (m *Mocker) FindRecipients(ctx context.Context, keys ...string) ([]string, error) {
-	rs := staticPrivateKeyList.Recipients()
-	res := make([]string, 0, len(rs))
-	for _, r := range rs {
-		for _, needle := range keys {
-			if strings.HasSuffix(r, needle) {
-				res = append(res, r)
-			}
+	res := make([]string, 0, len(keys))
+	for _, needle := range keys {
+		if key, err := staticPrivateKeyList.FindKey(needle); err == nil {
+			res = append(res, key.ID())
 		}
 	}
 

@@ -47,7 +47,15 @@ func TestPlain(t *testing.T) {
 
 	kl, err = m.FindRecipients(ctx, "0xDEADBEEF")
 	require.NoError(t, err)
-	assert.NotEmpty(t, kl, "FindRecipients(0xDEADBEEF)")
+	assert.Equal(t, []string{"0xDEADBEEF"}, kl, "FindRecipients(0xDEADBEEF)")
+
+	kl, err = m.FindRecipients(ctx, "dead.beef@example.com")
+	require.NoError(t, err)
+	assert.Equal(t, []string{"0xDEADBEEF"}, kl, "FindRecipients(dead.beef@example.com)")
+
+	kl, err = m.FindRecipients(ctx, "Dead Beef")
+	require.NoError(t, err)
+	assert.Equal(t, []string{"0xDEADBEEF"}, kl, "FindRecipients(Dead Beef)")
 
 	_, err = m.FindIdentities(ctx)
 	require.NoError(t, err)
